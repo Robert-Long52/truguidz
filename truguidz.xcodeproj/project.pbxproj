@@ -1,0 +1,635 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9E8302F43021785700E43B1F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 9E8302F33021785700E43B1F /* Supabase */; };
+		9E83036230241EE500E43B1F /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 9E83036130241EE500E43B1F /* Stripe */; };
+		9E83036430241EE500E43B1F /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 9E83036330241EE500E43B1F /* StripeApplePay */; };
+		9E83036630241EE500E43B1F /* StripeCardScan in Frameworks */ = {isa = PBXBuildFile; productRef = 9E83036530241EE500E43B1F /* StripeCardScan */; };
+		9E83036B30241EE500E43B1F /* StripePaymentSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 9E83036A30241EE500E43B1F /* StripePaymentSheet */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9E83024A301FF75D00E43B1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9E830231301FF75B00E43B1F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9E830238301FF75B00E43B1F;
+			remoteInfo = truguidz1;
+		};
+		9E830254301FF75D00E43B1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9E830231301FF75B00E43B1F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9E830238301FF75B00E43B1F;
+			remoteInfo = truguidz1;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9E830239301FF75B00E43B1F /* truguidz1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = truguidz1.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E830249301FF75D00E43B1F /* truguidz1Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = truguidz1Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E830253301FF75D00E43B1F /* truguidz1UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = truguidz1UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		9E83023B301FF75B00E43B1F /* truguidz1 */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = truguidz1;
+			sourceTree = "<group>";
+		};
+		9E83024C301FF75D00E43B1F /* truguidz1Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = truguidz1Tests;
+			sourceTree = "<group>";
+		};
+		9E830256301FF75D00E43B1F /* truguidz1UITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = truguidz1UITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9E830236301FF75B00E43B1F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E83036630241EE500E43B1F /* StripeCardScan in Frameworks */,
+				9E83036430241EE500E43B1F /* StripeApplePay in Frameworks */,
+				9E8302F43021785700E43B1F /* Supabase in Frameworks */,
+				9E83036230241EE500E43B1F /* Stripe in Frameworks */,
+				9E83036B30241EE500E43B1F /* StripePaymentSheet in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E830246301FF75D00E43B1F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E830250301FF75D00E43B1F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9E830230301FF75B00E43B1F = {
+			isa = PBXGroup;
+			children = (
+				9E83023B301FF75B00E43B1F /* truguidz1 */,
+				9E83024C301FF75D00E43B1F /* truguidz1Tests */,
+				9E830256301FF75D00E43B1F /* truguidz1UITests */,
+				9E8302F23021784A00E43B1F /* Frameworks */,
+				9E83023A301FF75B00E43B1F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9E83023A301FF75B00E43B1F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9E830239301FF75B00E43B1F /* truguidz1.app */,
+				9E830249301FF75D00E43B1F /* truguidz1Tests.xctest */,
+				9E830253301FF75D00E43B1F /* truguidz1UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9E8302F23021784A00E43B1F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9E830238301FF75B00E43B1F /* truguidz1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9E83025D301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1" */;
+			buildPhases = (
+				9E830235301FF75B00E43B1F /* Sources */,
+				9E830236301FF75B00E43B1F /* Frameworks */,
+				9E830237301FF75B00E43B1F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9E83023B301FF75B00E43B1F /* truguidz1 */,
+			);
+			name = truguidz1;
+			packageProductDependencies = (
+				9E8302F33021785700E43B1F /* Supabase */,
+				9E83036130241EE500E43B1F /* Stripe */,
+				9E83036330241EE500E43B1F /* StripeApplePay */,
+				9E83036530241EE500E43B1F /* StripeCardScan */,
+				9E83036A30241EE500E43B1F /* StripePaymentSheet */,
+			);
+			productName = truguidz1;
+			productReference = 9E830239301FF75B00E43B1F /* truguidz1.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9E830248301FF75D00E43B1F /* truguidz1Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9E830260301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1Tests" */;
+			buildPhases = (
+				9E830245301FF75D00E43B1F /* Sources */,
+				9E830246301FF75D00E43B1F /* Frameworks */,
+				9E830247301FF75D00E43B1F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9E83024B301FF75D00E43B1F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9E83024C301FF75D00E43B1F /* truguidz1Tests */,
+			);
+			name = truguidz1Tests;
+			packageProductDependencies = (
+			);
+			productName = truguidz1Tests;
+			productReference = 9E830249301FF75D00E43B1F /* truguidz1Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		9E830252301FF75D00E43B1F /* truguidz1UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9E830263301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1UITests" */;
+			buildPhases = (
+				9E83024F301FF75D00E43B1F /* Sources */,
+				9E830250301FF75D00E43B1F /* Frameworks */,
+				9E830251301FF75D00E43B1F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9E830255301FF75D00E43B1F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9E830256301FF75D00E43B1F /* truguidz1UITests */,
+			);
+			name = truguidz1UITests;
+			packageProductDependencies = (
+			);
+			productName = truguidz1UITests;
+			productReference = 9E830253301FF75D00E43B1F /* truguidz1UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9E830231301FF75B00E43B1F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					9E830238301FF75B00E43B1F = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					9E830248301FF75D00E43B1F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 9E830238301FF75B00E43B1F;
+					};
+					9E830252301FF75D00E43B1F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 9E830238301FF75B00E43B1F;
+					};
+				};
+			};
+			buildConfigurationList = 9E830234301FF75B00E43B1F /* Build configuration list for PBXProject "truguidz" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9E830230301FF75B00E43B1F;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9E8302EB302173EB00E43B1F /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9E83023A301FF75B00E43B1F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9E830238301FF75B00E43B1F /* truguidz1 */,
+				9E830248301FF75D00E43B1F /* truguidz1Tests */,
+				9E830252301FF75D00E43B1F /* truguidz1UITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9E830237301FF75B00E43B1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E830247301FF75D00E43B1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E830251301FF75D00E43B1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9E830235301FF75B00E43B1F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E830245301FF75D00E43B1F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E83024F301FF75D00E43B1F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9E83024B301FF75D00E43B1F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9E830238301FF75B00E43B1F /* truguidz1 */;
+			targetProxy = 9E83024A301FF75D00E43B1F /* PBXContainerItemProxy */;
+		};
+		9E830255301FF75D00E43B1F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9E830238301FF75B00E43B1F /* truguidz1 */;
+			targetProxy = 9E830254301FF75D00E43B1F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		9E83025B301FF75D00E43B1F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9E83025C301FF75D00E43B1F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9E83025E301FF75D00E43B1F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_ASSET_PATHS = "\"truguidz1/Preview Content\"";
+				DEVELOPMENT_TEAM = VF2LZBBSF4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "truguidz1-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		9E83025F301FF75D00E43B1F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_ASSET_PATHS = "\"truguidz1/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = VF2LZBBSF4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "truguidz1-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "TruGuidz App Store";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		9E830261301FF75D00E43B1F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/truguidz1.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/truguidz1";
+			};
+			name = Debug;
+		};
+		9E830262301FF75D00E43B1F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/truguidz1.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/truguidz1";
+			};
+			name = Release;
+		};
+		9E830264301FF75D00E43B1F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = truguidz1;
+			};
+			name = Debug;
+		};
+		9E830265301FF75D00E43B1F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.robertlong.truguidz1UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = truguidz1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9E830234301FF75B00E43B1F /* Build configuration list for PBXProject "truguidz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E83025B301FF75D00E43B1F /* Debug */,
+				9E83025C301FF75D00E43B1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9E83025D301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E83025E301FF75D00E43B1F /* Debug */,
+				9E83025F301FF75D00E43B1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9E830260301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E830261301FF75D00E43B1F /* Debug */,
+				9E830262301FF75D00E43B1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9E830263301FF75D00E43B1F /* Build configuration list for PBXNativeTarget "truguidz1UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E830264301FF75D00E43B1F /* Debug */,
+				9E830265301FF75D00E43B1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9E8302EB302173EB00E43B1F /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+		9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-ios";
+			requirement = {
+				kind = exactVersion;
+				version = 23.24.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9E8302F33021785700E43B1F /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E8302EB302173EB00E43B1F /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		9E83036130241EE500E43B1F /* Stripe */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = Stripe;
+		};
+		9E83036330241EE500E43B1F /* StripeApplePay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripeApplePay;
+		};
+		9E83036530241EE500E43B1F /* StripeCardScan */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripeCardScan;
+		};
+		9E83036A30241EE500E43B1F /* StripePaymentSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E83036030241EE500E43B1F /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePaymentSheet;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 9E830231301FF75B00E43B1F /* Project object */;
+}

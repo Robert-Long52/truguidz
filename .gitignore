@@ -1,0 +1,12 @@
+.claude/settings.local.json
+*/.claude/settings.local.json
+
+.DS_Store
+xcuserdata/
+DerivedData/
+
+.artifacts/
+truguidz-android-reference.md
+
+truguidz.xcodeproj.zip
+truguidz1.xcodeproj/
