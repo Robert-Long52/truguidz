@@ -51,6 +51,11 @@ create table public.profiles (
     notify_booking_updates  boolean not null default true,
     notify_promotions       boolean not null default false,
 
+    -- See add_platform_fee_waiver.sql -- an admin-only override for
+    -- individual guides (e.g. early guides helping test the platform).
+    -- Never settable by the guide themselves; see rls_policies.sql.
+    platform_fee_waived    boolean not null default false,
+
     phone_number         text,
     created_at           timestamptz not null default now()
 );

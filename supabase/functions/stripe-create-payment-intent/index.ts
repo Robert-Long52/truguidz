@@ -77,7 +77,7 @@ export default {
 
       const { data: guide, error: guideError } = await ctx.supabaseAdmin
         .from("profiles")
-        .select("stripe_connect_id, stripe_charges_enabled")
+        .select("stripe_connect_id, stripe_charges_enabled, platform_fee_waived")
         .eq("id", listing.guide_id)
         .single();
 
@@ -89,7 +89,13 @@ export default {
       }
 
       const totalCents = Math.round(amount * 100);
-      const applicationFeeCents = Math.round(totalCents * PLATFORM_FEE_RATE);
+      // 0 for a guide with platform_fee_waived (see
+      // add_platform_fee_waiver.sql) -- Stripe's own processing cut still
+      // comes out of transfer_data.destination either way, this only
+      // zeroes TruGuidz's own cut.
+      const applicationFeeCents = guide.platform_fee_waived
+        ? 0
+        : Math.round(totalCents * PLATFORM_FEE_RATE);
 
       const paymentIntent = await stripeRequest("payment_intents", {
         amount: String(totalCents),
@@ -101,6 +107,7 @@ export default {
         "metadata[listing_id]": listingId,
         "metadata[explorer_id]": explorerId,
         "metadata[guide_id]": listing.guide_id,
+        "metadata[platform_fee_waived]": String(guide.platform_fee_waived === true),
       });
 
       return Response.json({
