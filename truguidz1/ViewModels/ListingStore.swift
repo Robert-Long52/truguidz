@@ -36,16 +36,17 @@ final class ListingStore: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            // is_active is only ever false after the owning guide's account
-            // has been deleted (see supabase/functions/delete-account) --
-            // a deleted account is also banned from signing in, so there's
-            // no legitimate case where a signed-in user needs to see one
-            // of their own inactive listings. Filtering here, once,
-            // instead of in every view that reads listingStore.listings.
+            // Deliberately not filtered by is_active: a guide needs to see
+            // their own deactivated listings (in GuidzDashboardView.myListings)
+            // to reactivate them, and a past booking's listing lookup
+            // (BookingsView, GuideBookingDetailView) needs to resolve even
+            // after the guide has since deactivated that listing. Explore's
+            // feed reads bookableListings instead, which is already scoped
+            // to active + Stripe-enabled listings via the bookable_listings
+            // view -- this array is never shown to explorers directly.
             async let allListings: [Listing] = supabase
                 .from("listings")
                 .select()
-                .eq("is_active", value: true)
                 .order("created_at", ascending: false)
                 .execute()
                 .value
@@ -242,6 +243,33 @@ final class ListingStore: ObservableObject {
             }
         } catch {
             print("Failed to update listing images for \(listingId): \(error)")
+        }
+    }
+
+    // A guide-facing pause/unpause, distinct from account-deletion's
+    // is_active flip -- both use the same column, but this one is
+    // reversible from the app and never touches bookings. Deactivating
+    // just pulls the listing out of bookable_listings (so it disappears
+    // from Explore) without deleting anything -- existing bookings, their
+    // Stripe payment records, and any messages stay exactly as they are.
+    func setListingActive(listingId: String, isActive: Bool) async throws {
+        try await supabase
+            .from("listings")
+            .update(["is_active": isActive])
+            .eq("id", value: listingId)
+            .execute()
+
+        if let index = listings.firstIndex(where: { $0.id == listingId }) {
+            listings[index].isActive = isActive
+        }
+        if isActive {
+            // Reactivating doesn't necessarily mean it's bookable again --
+            // that also needs the guide's Stripe status, which this
+            // method has no way to check -- so just leave bookableListings
+            // alone and let the next loadListings() (RLS-filtered server
+            // side via bookable_listings) decide whether it belongs there.
+        } else {
+            bookableListings.removeAll { $0.id == listingId }
         }
     }
 }

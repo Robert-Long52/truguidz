@@ -26,6 +26,10 @@ struct EditListingView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
 
+    @State private var isActive: Bool
+    @State private var isTogglingActive = false
+    @State private var showDeactivateConfirm = false
+
     init(listing: Listing) {
         self.listing = listing
         _title = State(initialValue: listing.title)
@@ -38,6 +42,7 @@ struct EditListingView: View {
         _tripLength = State(initialValue: listing.tripLength)
         _packageDays = State(initialValue: listing.packageDays ?? 3)
         _selectedDays = State(initialValue: Set(listing.availableDays))
+        _isActive = State(initialValue: listing.isActive)
     }
 
     // Pending bookings already locked in their own price/guest count when
@@ -154,6 +159,44 @@ struct EditListingView: View {
                     Text.darkSectionLabel("Photos")
                 }
 
+                Section {
+                    Button(role: isActive ? .destructive : nil) {
+                        if isActive {
+                            showDeactivateConfirm = true
+                        } else {
+                            toggleActive(to: true)
+                        }
+                    } label: {
+                        HStack {
+                            if isTogglingActive {
+                                ProgressView()
+                            } else {
+                                Text(isActive ? "Deactivate Listing" : "Reactivate Listing")
+                            }
+                            Spacer()
+                        }
+                    }
+                    .disabled(isTogglingActive)
+                } header: {
+                    Text.darkSectionLabel("Visibility")
+                } footer: {
+                    Text(isActive
+                         ? "Hides this listing from Explore. Existing bookings and messages aren't affected, and you can reactivate it anytime."
+                         : "This listing is hidden from explorers. Reactivate it to make it bookable again.")
+                }
+                .confirmationDialog(
+                    "Deactivate this listing?",
+                    isPresented: $showDeactivateConfirm,
+                    titleVisibility: .visible
+                ) {
+                    Button("Deactivate", role: .destructive) {
+                        toggleActive(to: false)
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("It will disappear from Explore right away. Existing bookings and messages won't be affected.")
+                }
+
                 if let errorMessage {
                     Section {
                         Text(errorMessage)
@@ -192,6 +235,19 @@ struct EditListingView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
+            }
+        }
+    }
+
+    private func toggleActive(to newValue: Bool) {
+        isTogglingActive = true
+        Task {
+            defer { isTogglingActive = false }
+            do {
+                try await listingStore.setListingActive(listingId: listing.id, isActive: newValue)
+                isActive = newValue
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
     }
