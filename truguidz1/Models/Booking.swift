@@ -24,6 +24,11 @@ struct Booking: Identifiable, Codable {
     // (see add_booking_conflict_prevention.sql).
     var endDate: Date
     var numberOfGuests: Int
+    // Breakdown of numberOfGuests -- nil for a booking made before this
+    // existed (see add_adults_children_headcount.sql), in which case the
+    // UI just falls back to showing the plain total.
+    var numberOfAdults: Int? = nil
+    var numberOfChildren: Int? = nil
     var totalPrice: Double
 
     // Status tracking
@@ -41,13 +46,29 @@ struct Booking: Identifiable, Codable {
         case guideId = "guide_id"
         case endDate = "end_date"
         case numberOfGuests = "number_of_guests"
+        case numberOfAdults = "number_of_adults"
+        case numberOfChildren = "number_of_children"
         case totalPrice = "total_price"
         case createdAt = "created_at"
         case stripePaymentIntentId = "stripe_payment_intent_id"
     }
 }
  
-// 3. Mock data for instant testing, same pattern as Listing.mockListings
+// 3. Display helper -- falls back to the plain total for a booking made
+// before the adults/children split existed (see
+// add_adults_children_headcount.sql), rather than fabricating a breakdown
+// that was never actually captured.
+extension Booking {
+    var guestSummary: String {
+        guard let adults = numberOfAdults, let children = numberOfChildren else {
+            return "\(numberOfGuests) guest\(numberOfGuests == 1 ? "" : "s")"
+        }
+        guard children > 0 else { return "\(adults) adult\(adults == 1 ? "" : "s")" }
+        return "\(adults) adult\(adults == 1 ? "" : "s"), \(children) child\(children == 1 ? "" : "ren")"
+    }
+}
+
+// 4. Mock data for instant testing, same pattern as Listing.mockListings
 extension Booking {
     static let mockBookings: [Booking] = [
         Booking(

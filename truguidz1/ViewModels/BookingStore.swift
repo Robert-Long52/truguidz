@@ -63,12 +63,14 @@ final class BookingStore: ObservableObject {
         listing: Listing,
         explorerId: String,
         date: Date,
-        numberOfGuests: Int,
+        numberOfAdults: Int,
+        numberOfChildren: Int,
         hours: Int? = nil,
         stripePaymentIntentId: String
     ) async throws -> Booking {
         // Snapshotted alongside totalPrice/numberOfGuests -- see Booking.endDate.
         let endDate = Calendar.current.date(byAdding: .day, value: listing.packageDayCount - 1, to: date) ?? date
+        let numberOfGuests = numberOfAdults + numberOfChildren
 
         let newBooking = Booking(
             id: UUID().uuidString,
@@ -78,6 +80,8 @@ final class BookingStore: ObservableObject {
             date: date,
             endDate: endDate,
             numberOfGuests: numberOfGuests,
+            numberOfAdults: numberOfAdults,
+            numberOfChildren: numberOfChildren,
             totalPrice: listing.totalPrice(numberOfGuests: numberOfGuests, hours: hours),
             status: .pending,
             createdAt: Date(),

@@ -37,8 +37,14 @@ struct BookingRequestView: View {
     @EnvironmentObject var bookingStore: BookingStore
     @Environment(\.dismiss) private var dismiss
 
+    init(listing: Listing) {
+        self.listing = listing
+        _blockedDates = State(initialValue: listing.blockedDateValues)
+    }
+
     @State private var selectedDate: Date = Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
-    @State private var numberOfGuests: Int = 1
+    @State private var numberOfAdults: Int = 1
+    @State private var numberOfChildren: Int = 0
     @State private var numberOfHours: Int = 4
     @State private var confirmedBooking: Booking?
     @State private var isSubmitting = false
@@ -50,6 +56,11 @@ struct BookingRequestView: View {
     private var hoursIfApplicable: Int? {
         listing.pricingUnit == .perHour ? numberOfHours : nil
     }
+
+    // Children count toward group size and price exactly like an adult --
+    // no separate child pricing was asked for, this split is purely so the
+    // guide can see who's actually showing up.
+    private var numberOfGuests: Int { numberOfAdults + numberOfChildren }
 
     private var totalPrice: Double {
         listing.totalPrice(numberOfGuests: numberOfGuests, hours: hoursIfApplicable)
@@ -74,7 +85,12 @@ struct BookingRequestView: View {
     // would silently look open. The RPC is SECURITY DEFINER specifically
     // so it can see across that boundary, but it only ever returns the
     // date range, nothing else about the booking.
-    @State private var blockedDates: Set<Date> = []
+    // Starts pre-seeded with the listing's own manually-blocked dates (see
+    // Listing.blockedDateValues) so those are already respected even
+    // before loadBlockedDates' network call resolves -- loadBlockedDates
+    // only ever adds to this set, never replaces it, so that seed data
+    // can't be clobbered.
+    @State private var blockedDates: Set<Date>
 
     private func loadBlockedDates() async {
         let calendar = Calendar.current
@@ -83,17 +99,15 @@ struct BookingRequestView: View {
                 .rpc("guide_confirmed_date_ranges", params: GuideDateRangeParams(guideId: listing.guideId))
                 .execute()
                 .value
-            var blocked: Set<Date> = []
             for range in ranges {
                 var day = calendar.startOfDay(for: range.startDate)
                 let lastDay = calendar.startOfDay(for: range.endDate)
                 while day <= lastDay {
-                    blocked.insert(day)
+                    blockedDates.insert(day)
                     guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
                     day = next
                 }
             }
-            blockedDates = blocked
         } catch {
             print("Failed to load guide's blocked dates: \(error)")
         }
@@ -205,8 +219,11 @@ struct BookingRequestView: View {
 
                 card("Guests") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Stepper(value: $numberOfGuests, in: 1...listing.maxGroupSize) {
-                            Text("\(numberOfGuests) guest\(numberOfGuests == 1 ? "" : "s")")
+                        Stepper(value: $numberOfAdults, in: 1...(listing.maxGroupSize - numberOfChildren)) {
+                            Text("\(numberOfAdults) adult\(numberOfAdults == 1 ? "" : "s")")
+                        }
+                        Stepper(value: $numberOfChildren, in: 0...(listing.maxGroupSize - numberOfAdults)) {
+                            Text("\(numberOfChildren) child\(numberOfChildren == 1 ? "" : "ren")")
                         }
                         Text("Max group size: \(listing.maxGroupSize)")
                             .font(.caption)
@@ -354,7 +371,8 @@ struct BookingRequestView: View {
                         listing: listing,
                         explorerId: explorerId,
                         date: selectedDate,
-                        numberOfGuests: numberOfGuests,
+                        numberOfAdults: numberOfAdults,
+                        numberOfChildren: numberOfChildren,
                         hours: hoursIfApplicable,
                         stripePaymentIntentId: paymentIntentId
                     )
@@ -392,7 +410,7 @@ struct BookingRequestView: View {
 
             VStack(spacing: 8) {
                 summaryRow(label: "Date", value: booking.date.formatted(date: .abbreviated, time: .omitted))
-                summaryRow(label: "Guests", value: "\(booking.numberOfGuests)")
+                summaryRow(label: "Guests", value: booking.guestSummary)
                 summaryRow(label: "Total", value: "$\(Int(booking.totalPrice))")
             }
             .padding()

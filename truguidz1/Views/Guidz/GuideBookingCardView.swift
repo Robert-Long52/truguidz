@@ -56,7 +56,7 @@ struct GuideBookingCardView: View {
  
             HStack(spacing: 16) {
                 Label(formattedDate, systemImage: "calendar")
-                Label("\(booking.numberOfGuests) guest\(booking.numberOfGuests == 1 ? "" : "s")", systemImage: "person.2")
+                Label(booking.guestSummary, systemImage: "person.2")
                 Label("$\(Int(booking.totalPrice))", systemImage: "dollarsign.circle")
             }
             .font(.caption)
