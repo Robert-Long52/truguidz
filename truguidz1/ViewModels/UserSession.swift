@@ -79,6 +79,11 @@ final class UserSession: ObservableObject {
                 .single()
                 .execute()
                 .value
+            // Safe to call on every session restore, not just a fresh
+            // login -- iOS only ever shows the actual permission prompt
+            // once per install and just hands back the existing decision
+            // on every later call.
+            PushNotificationService.requestAuthorizationAndRegister()
         } catch {
             print("Failed to load profile for \(userId): \(error)")
         }
