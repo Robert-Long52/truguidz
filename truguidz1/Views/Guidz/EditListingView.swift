@@ -30,6 +30,9 @@ struct EditListingView: View {
     @State private var isTogglingActive = false
     @State private var showDeactivateConfirm = false
 
+    @State private var blockedDates: Set<String>
+    @State private var showBlockedDatesEditor = false
+
     init(listing: Listing) {
         self.listing = listing
         _title = State(initialValue: listing.title)
@@ -43,6 +46,27 @@ struct EditListingView: View {
         _packageDays = State(initialValue: listing.packageDays ?? 3)
         _selectedDays = State(initialValue: Set(listing.availableDays))
         _isActive = State(initialValue: listing.isActive)
+        _blockedDates = State(initialValue: Set(listing.blockedDates))
+    }
+
+    // Days this listing already has a real confirmed/completed trip on --
+    // shown in the blocked-dates picker as fixed "Booked" days that can't
+    // be toggled either way, same reasoning BookingDayPickerView already
+    // uses for the explorer-facing calendar.
+    private var occupiedDateKeys: Set<String> {
+        let calendar = Calendar.current
+        var keys: Set<String> = []
+        for booking in bookingStore.bookings
+        where booking.listingId == listing.id && (booking.status == .confirmed || booking.status == .completed) {
+            var day = calendar.startOfDay(for: booking.date)
+            let lastDay = calendar.startOfDay(for: booking.endDate)
+            while day <= lastDay {
+                keys.insert(ListingDateFormat.formatter.string(from: day))
+                guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+                day = next
+            }
+        }
+        return keys
     }
 
     // Pending bookings already locked in their own price/guest count when
@@ -147,6 +171,32 @@ struct EditListingView: View {
                     } header: {
                         Text.darkSectionLabel("Availability")
                     }
+                }
+
+                Section {
+                    Button {
+                        showBlockedDatesEditor = true
+                    } label: {
+                        HStack {
+                            Text("Manage Blocked Dates")
+                            Spacer()
+                            if !blockedDates.isEmpty {
+                                Text("\(blockedDates.count)")
+                                    .foregroundColor(.appSecondaryText)
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.appSecondaryText)
+                        }
+                    }
+                    .foregroundColor(.primary)
+                } header: {
+                    Text.darkSectionLabel("Blocked Dates")
+                } footer: {
+                    Text("Block off individual days you're not available, on top of your regular weekly schedule above.")
+                }
+                .sheet(isPresented: $showBlockedDatesEditor) {
+                    BlockedDatesEditorView(blockedDates: $blockedDates, occupiedDates: occupiedDateKeys)
                 }
 
                 Section {
@@ -272,7 +322,8 @@ struct EditListingView: View {
                     locationName: locationName,
                     tripLength: tripLength,
                     packageDays: tripLength == .multiDay ? packageDays : nil,
-                    availableDays: Array(selectedDays).sorted { $0.rawValue < $1.rawValue }
+                    availableDays: Array(selectedDays).sorted { $0.rawValue < $1.rawValue },
+                    blockedDates: Array(blockedDates).sorted()
                 )
 
                 if !selectedImagesData.isEmpty {

@@ -123,6 +123,7 @@ final class ListingStore: ObservableObject {
         let tripLength: TripLength
         let packageDays: Int?
         let availableDays: [Weekday]
+        let blockedDates: [String]
 
         enum CodingKeys: String, CodingKey {
             case title, description, category
@@ -133,6 +134,7 @@ final class ListingStore: ObservableObject {
             case tripLength = "trip_length"
             case packageDays = "package_days"
             case availableDays = "available_days"
+            case blockedDates = "blocked_dates"
         }
 
         // The default synthesized Encodable for an Optional property uses
@@ -157,6 +159,7 @@ final class ListingStore: ObservableObject {
                 try container.encodeNil(forKey: .packageDays)
             }
             try container.encode(availableDays, forKey: .availableDays)
+            try container.encode(blockedDates, forKey: .blockedDates)
         }
     }
 
@@ -178,7 +181,8 @@ final class ListingStore: ObservableObject {
         locationName: String,
         tripLength: TripLength,
         packageDays: Int?,
-        availableDays: [Weekday]
+        availableDays: [Weekday],
+        blockedDates: [String]
     ) async throws {
         let update = ListingUpdate(
             title: title,
@@ -190,7 +194,8 @@ final class ListingStore: ObservableObject {
             locationName: locationName,
             tripLength: tripLength,
             packageDays: packageDays,
-            availableDays: availableDays
+            availableDays: availableDays,
+            blockedDates: blockedDates
         )
 
         try await supabase
@@ -210,6 +215,7 @@ final class ListingStore: ObservableObject {
             listing.tripLength = tripLength
             listing.packageDays = packageDays
             listing.availableDays = availableDays
+            listing.blockedDates = blockedDates
         }
 
         if let index = listings.firstIndex(where: { $0.id == listingId }) {

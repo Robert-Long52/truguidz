@@ -34,7 +34,7 @@ export default {
 
       const { data: booking, error: bookingError } = await ctx.supabaseAdmin
         .from("bookings")
-        .select("guide_id, status, date, end_date, stripe_payment_intent_id")
+        .select("guide_id, listing_id, status, date, end_date, stripe_payment_intent_id")
         .eq("id", bookingId)
         .single();
 
@@ -83,6 +83,33 @@ export default {
       if (hasConflict) {
         return Response.json(
           { error: "You already have a confirmed trip that overlaps this date." },
+          { status: 409 },
+        );
+      }
+
+      // Same idea as the confirmed-conflict check above, but against days
+      // the guide manually blocked off on this listing (see
+      // add_listing_blocked_dates.sql) rather than another booking. A
+      // guide can still change their mind and confirm anyway by first
+      // unblocking the date on the listing -- this only stops confirming
+      // straight past a block by accident.
+      const { data: blockedConflict, error: blockedError } = await ctx.supabaseAdmin.rpc(
+        "listing_has_blocked_date_conflict",
+        {
+          p_listing_id: booking.listing_id,
+          p_start_date: booking.date,
+          p_end_date: booking.end_date,
+        },
+      );
+
+      if (blockedError) {
+        console.error("Failed to check for blocked-date conflicts:", blockedError);
+        return Response.json({ error: "Could not verify availability" }, { status: 500 });
+      }
+
+      if (blockedConflict) {
+        return Response.json(
+          { error: "This date is blocked on your calendar. Unblock it on the listing first if you want to confirm this trip." },
           { status: 409 },
         );
       }

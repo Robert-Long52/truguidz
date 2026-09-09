@@ -92,6 +92,18 @@ struct Listing: Identifiable, Codable, Hashable {
     var packageDays: Int? = nil     // only meaningful when tripLength == .multiDay
     var availableDays: [Weekday] = Weekday.allCases
 
+    // Individual dates the guide has manually blocked off, on top of their
+    // recurring availableDays pattern (a vacation, a maintenance day, etc).
+    // Kept as plain "yyyy-MM-dd" strings rather than Date -- Postgres's
+    // bare `date` column has no time-of-day/timezone component at all, and
+    // decoding it straight into Date would mean picking a decoding
+    // strategy that has to agree with whatever format PostgREST happens to
+    // serialize a date (not timestamptz) column as. Comparing/parsing
+    // these against a real Date only ever needs to happen at the "yyyy-MM-dd"
+    // granularity anyway, so working with the raw string sidesteps that
+    // ambiguity entirely.
+    var blockedDates: [String] = []
+
     // Social proof — shown as stars on the card
     var rating: Double              // 0.0 to 5.0
     var reviewCount: Int
@@ -115,6 +127,7 @@ struct Listing: Identifiable, Codable, Hashable {
         case tripLength = "trip_length"
         case packageDays = "package_days"
         case availableDays = "available_days"
+        case blockedDates = "blocked_dates"
         case isActive = "is_active"
     }
 
@@ -140,6 +153,31 @@ struct Listing: Identifiable, Codable, Hashable {
     }
 }
  
+// A single shared formatter for blockedDates' "yyyy-MM-dd" strings -- every
+// call site needs to agree on the exact same format, both when parsing
+// them back into Date and when writing new ones out to save.
+enum ListingDateFormat {
+    static let formatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.calendar = Calendar(identifier: .gregorian)
+        f.timeZone = TimeZone.current
+        return f
+    }()
+}
+
+extension Listing {
+    // Start-of-day Date values for each blocked date string, in the
+    // device's current calendar -- ready to union straight into
+    // BookingRequestView's blockedDates set.
+    var blockedDateValues: Set<Date> {
+        let calendar = Calendar.current
+        return Set(blockedDates.compactMap { dateString in
+            ListingDateFormat.formatter.date(from: dateString).map { calendar.startOfDay(for: $0) }
+        })
+    }
+}
+
 // 3. Blend rating with review volume so a single 5-star review can't
 // outrank a guide with dozens of solidly-good ones -- a plain average
 // treats "1 review, 5.0" and "80 reviews, 4.8" as if the first is better.
