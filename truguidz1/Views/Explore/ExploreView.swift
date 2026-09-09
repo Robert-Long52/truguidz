@@ -8,6 +8,8 @@ struct ExploreView: View {
     @State private var selectedRegion: String? = nil
     @State private var selectedType: ExperienceType? = nil
     @State private var selectedMinRating: Double? = nil
+    @State private var searchText: String = ""
+    @State private var sortOption: ListingSortOption = .recommended
 
     @State private var showMessagesInbox = false
     @State private var showNoMessagesInfo = false
@@ -64,20 +66,39 @@ struct ExploreView: View {
 
     private static let ratingOptions: [Double] = [4.5, 4.0, 3.5]
 
+    // Matches title, location, or category against the search text -- a
+    // plain case/diacritic-insensitive substring check covers "bass",
+    // "Catawissa", or "fishing" all landing on the same listing without
+    // needing a real search index for a feed this size.
+    private func matchesSearch(_ listing: Listing) -> Bool {
+        let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return true }
+        return listing.title.localizedStandardContains(trimmed) ||
+            listing.locationName.localizedStandardContains(trimmed) ||
+            listing.category.rawValue.localizedStandardContains(trimmed)
+    }
+
     // Sorted by qualityScore (not raw rating) so the best-reviewed trips
-    // lead the feed rather than whichever happens to have one perfect review.
+    // lead the feed rather than whichever happens to have one perfect
+    // review -- unless the explorer has explicitly asked for a price sort,
+    // which overrides that ranking entirely rather than blending with it.
     private var filteredListings: [Listing] {
-        listingStore.bookableListings
+        let matches = listingStore.bookableListings
             .filter { listing in
+                matchesSearch(listing) &&
                 (selectedRegion == nil || listing.locationName == selectedRegion) &&
                 (selectedType == nil || listing.category == selectedType) &&
                 (selectedMinRating == nil || listing.qualityScore >= selectedMinRating!)
             }
-            .sorted { $0.qualityScore > $1.qualityScore }
+        switch sortOption {
+        case .recommended: return matches.sorted { $0.qualityScore > $1.qualityScore }
+        case .priceLowToHigh: return matches.sorted { $0.pricePerPerson < $1.pricePerPerson }
+        case .priceHighToLow: return matches.sorted { $0.pricePerPerson > $1.pricePerPerson }
+        }
     }
 
     private var hasActiveFilters: Bool {
-        selectedRegion != nil || selectedType != nil || selectedMinRating != nil
+        selectedRegion != nil || selectedType != nil || selectedMinRating != nil || sortOption != .recommended
     }
  
     var body: some View {
@@ -124,7 +145,33 @@ struct ExploreView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top)
- 
+
+                    // Search -- filters the main feed below by title,
+                    // location, or category. Deliberately doesn't touch the
+                    // Featured Guides carousel above, same reasoning as the
+                    // filter badges: that strip is curated promo, not part
+                    // of the searchable/filterable results.
+                    HStack(spacing: 10) {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.appSecondaryText)
+                        TextField("Search trips, locations, categories", text: $searchText)
+                            .foregroundColor(.primary)
+                            .autocorrectionDisabled()
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.appSecondaryText)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 11)
+                    .background(Color.appCard)
+                    .cornerRadius(14)
+                    .padding(.horizontal)
+
                     // 2. Featured Guides — horizontal scrolling carousel,
                     // shown as soon as the screen opens per the sketch.
                     // Unfiltered on purpose — this is a curated promo strip,
@@ -161,6 +208,7 @@ struct ExploreView: View {
                                     selectedRegion = nil
                                     selectedType = nil
                                     selectedMinRating = nil
+                                    sortOption = .recommended
                                 }
                                 .font(.subheadline)
                             }
@@ -189,6 +237,8 @@ struct ExploreView: View {
                                     selection: $selectedMinRating,
                                     label: { "\(String(format: "%.1f", $0))+ Stars" }
                                 )
+
+                                SortMenuBadge(selection: $sortOption)
                             }
                             .padding(.horizontal)
                         }
@@ -207,6 +257,8 @@ struct ExploreView: View {
                                 selectedRegion = nil
                                 selectedType = nil
                                 selectedMinRating = nil
+                                sortOption = .recommended
+                                searchText = ""
                             }
                             .font(.subheadline)
                         }
@@ -259,6 +311,73 @@ struct ExploreView: View {
     }
 }
  
+// Overrides the default qualityScore ranking entirely when set to either
+// price direction -- an explorer who explicitly asked to sort by price
+// wants that respected exactly, not blended with review quality.
+enum ListingSortOption: Equatable {
+    case recommended, priceLowToHigh, priceHighToLow
+
+    var label: String {
+        switch self {
+        case .recommended: return "Sort"
+        case .priceLowToHigh: return "Price: Low to High"
+        case .priceHighToLow: return "Price: High to Low"
+        }
+    }
+}
+
+struct SortMenuBadge: View {
+    @Binding var selection: ListingSortOption
+
+    var body: some View {
+        Menu {
+            Button {
+                selection = .recommended
+            } label: {
+                if selection == .recommended {
+                    Label("Recommended", systemImage: "checkmark")
+                } else {
+                    Text("Recommended")
+                }
+            }
+            Button {
+                selection = .priceLowToHigh
+            } label: {
+                if selection == .priceLowToHigh {
+                    Label("Price: Low to High", systemImage: "checkmark")
+                } else {
+                    Text("Price: Low to High")
+                }
+            }
+            Button {
+                selection = .priceHighToLow
+            } label: {
+                if selection == .priceHighToLow {
+                    Label("Price: High to Low", systemImage: "checkmark")
+                } else {
+                    Text("Price: High to Low")
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.caption2)
+                Text(selection.label)
+                Image(systemName: "chevron.down")
+                    .font(.caption2)
+            }
+            .font(.footnote)
+            .fontWeight(.semibold)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(selection == .recommended ? Color.appCard : Color.accentColor)
+            .foregroundColor(selection == .recommended ? .primary : .appTextOnDark)
+            .cornerRadius(20)
+            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+        }
+    }
+}
+
 // Generic filter badge — shows a Menu of options for the given type,
 // with a checkmark on the current selection and an "All" option to clear it.
 struct FilterMenuBadge<T: Hashable>: View {
