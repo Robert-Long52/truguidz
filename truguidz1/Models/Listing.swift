@@ -114,7 +114,11 @@ struct Listing: Identifiable, Codable, Hashable {
     // this is what actually hides it from Explore instead.
     var isActive: Bool = true
 
-    // Maps to the listings table's snake_case columns (see supabase/schema.sql).
+    // Maps to the listings table's snake_case columns (see
+    // supabase/schema.sql and supabase/bookable_listings_view.sql -- this
+    // gets decoded from both the raw table and that view, and the view's
+    // column list has to be kept in sync by hand since it doesn't use
+    // `select *`).
     enum CodingKeys: String, CodingKey {
         case id, title, description, category, latitude, longitude, rating
         case guideId = "guide_id"
@@ -129,6 +133,88 @@ struct Listing: Identifiable, Codable, Hashable {
         case availableDays = "available_days"
         case blockedDates = "blocked_dates"
         case isActive = "is_active"
+    }
+
+    // Defining init(from:) below removes Swift's free memberwise
+    // initializer (any custom init does, not just a Decodable one) -- this
+    // restores it explicitly, same parameter list/defaults as before, so
+    // mockListings and ListingStore.createListing can still construct a
+    // Listing directly.
+    init(
+        id: String,
+        guideId: String,
+        title: String,
+        description: String,
+        category: ExperienceType,
+        imageUrls: [String],
+        pricePerPerson: Double,
+        pricingUnit: PricingUnit = .perPerson,
+        maxGroupSize: Int,
+        locationName: String,
+        latitude: Double,
+        longitude: Double,
+        tripLength: TripLength = .fullDay,
+        packageDays: Int? = nil,
+        availableDays: [Weekday] = Weekday.allCases,
+        blockedDates: [String] = [],
+        rating: Double,
+        reviewCount: Int,
+        isActive: Bool = true
+    ) {
+        self.id = id
+        self.guideId = guideId
+        self.title = title
+        self.description = description
+        self.category = category
+        self.imageUrls = imageUrls
+        self.pricePerPerson = pricePerPerson
+        self.pricingUnit = pricingUnit
+        self.maxGroupSize = maxGroupSize
+        self.locationName = locationName
+        self.latitude = latitude
+        self.longitude = longitude
+        self.tripLength = tripLength
+        self.packageDays = packageDays
+        self.availableDays = availableDays
+        self.blockedDates = blockedDates
+        self.rating = rating
+        self.reviewCount = reviewCount
+        self.isActive = isActive
+    }
+
+    // Confirmed live: bookable_listings_view.sql went stale for a while
+    // after blocked_dates was added to the listings table (its column
+    // list is explicit, not `select *`, so it silently never picked up
+    // the new column) -- decoding a row missing that key threw
+    // keyNotFound, which failed ListingStore.loadListings() as a whole
+    // (it loads the raw table and this view together) and blanked every
+    // guide's "Your Listings" screen, not just the affected row. The real
+    // fix is keeping that view's column list current, but this custom
+    // decode is the defense-in-depth half: blockedDates specifically
+    // degrading to its default instead of hard-failing means the next
+    // view/query that lags behind a new listings column can't take down
+    // the whole listings screen over just this one field again.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        guideId = try container.decode(String.self, forKey: .guideId)
+        title = try container.decode(String.self, forKey: .title)
+        description = try container.decode(String.self, forKey: .description)
+        category = try container.decode(ExperienceType.self, forKey: .category)
+        imageUrls = try container.decode([String].self, forKey: .imageUrls)
+        pricePerPerson = try container.decode(Double.self, forKey: .pricePerPerson)
+        pricingUnit = try container.decodeIfPresent(PricingUnit.self, forKey: .pricingUnit) ?? .perPerson
+        maxGroupSize = try container.decode(Int.self, forKey: .maxGroupSize)
+        locationName = try container.decode(String.self, forKey: .locationName)
+        latitude = try container.decode(Double.self, forKey: .latitude)
+        longitude = try container.decode(Double.self, forKey: .longitude)
+        tripLength = try container.decodeIfPresent(TripLength.self, forKey: .tripLength) ?? .fullDay
+        packageDays = try container.decodeIfPresent(Int.self, forKey: .packageDays)
+        availableDays = try container.decodeIfPresent([Weekday].self, forKey: .availableDays) ?? Weekday.allCases
+        blockedDates = try container.decodeIfPresent([String].self, forKey: .blockedDates) ?? []
+        rating = try container.decode(Double.self, forKey: .rating)
+        reviewCount = try container.decode(Int.self, forKey: .reviewCount)
+        isActive = try container.decodeIfPresent(Bool.self, forKey: .isActive) ?? true
     }
 
     // Booking.date is always a single "start" date -- a multi-day package's

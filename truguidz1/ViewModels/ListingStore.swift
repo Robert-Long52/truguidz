@@ -18,7 +18,8 @@ final class ListingStore: ObservableObject {
     // reads `listings` (see GuidzDashboardView.myListings) so they can see
     // and manage a listing they're still setting up payouts for.
     //
-    // Sourced from the `bookable_listings` view (see supabase/schema.sql),
+    // Sourced from the `bookable_listings` view (see
+    // supabase/bookable_listings_view.sql),
     // which joins listings to profiles server-side and returns only
     // listings columns -- filtering by the guide's stripe_charges_enabled
     // client-side would mean embedding profiles data into this query, and
