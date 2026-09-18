@@ -1,11 +1,16 @@
 // Called by database triggers (see add_push_notification_triggers.sql)
 // right after a booking is requested, a booking's status changes, or a
-// new message is sent -- never called directly by the app. The platform's
-// own verify_jwt gate (config.toml) is what actually protects this: a
-// trigger authenticates with the project's service_role key (a real,
-// validly-signed JWT for this project, available to Postgres via the
-// built-in app.settings.service_role_key -- see the trigger SQL), so a
-// stranger without that key can't reach this at all.
+// new message is sent -- never called directly by the app.
+//
+// verify_jwt is off for this function (config.toml) since the caller is a
+// Postgres trigger, not a logged-in user with a real JWT. What actually
+// gates this instead is a single-purpose shared secret (PUSH_WEBHOOK_SECRET)
+// that only this function and the trigger's Vault entry know -- deliberately
+// NOT the project's service_role key. A trigger only ever needs to do one
+// thing here (ask for a push to be sent); handing it the full service_role
+// key just to authenticate that would mean a compromised trigger function
+// gets complete, RLS-bypassing database access as a side effect, which is a
+// wildly bigger blast radius than this one call actually needs.
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { withSupabase } from "@supabase/server";
 import { sendPush } from "../_shared/apns.ts";
@@ -19,6 +24,11 @@ interface RequestBody {
 export default {
   fetch: withSupabase({ auth: "none" }, async (req, ctx) => {
     try {
+      const expectedSecret = Deno.env.get("PUSH_WEBHOOK_SECRET");
+      if (!expectedSecret || req.headers.get("x-webhook-secret") !== expectedSecret) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
       const { userId, title, body } = (await req.json()) as RequestBody;
       if (!userId || !title || !body) {
         return Response.json({ error: "Missing userId/title/body" }, { status: 400 });

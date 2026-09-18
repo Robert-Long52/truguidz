@@ -11,10 +11,17 @@
 -- failing push can never block or fail the actual booking/message write
 -- that triggered it.
 --
--- app.settings.supabase_url / app.settings.service_role_key are GUC
--- settings Supabase's hosted Postgres pre-populates for exactly this
--- pattern -- nothing to configure, and no secret ever needs to live in
--- this checked-in SQL file.
+-- This project's app.settings.supabase_url / app.settings.service_role_key
+-- GUCs (the usual pre-populated pattern for this on hosted Supabase) come
+-- back null here, and even where they do exist, handing a trigger the full
+-- service_role key just to call one endpoint is more access than "ask for
+-- a push to be sent" actually needs -- a compromised trigger function
+-- would get complete, RLS-bypassing database access as a side effect. This
+-- uses a single-purpose secret stored in Vault instead (see the setup note
+-- at the bottom of this file), sent as a custom header that
+-- send-push-notification checks itself -- the Supabase URL isn't
+-- sensitive (it's already public in the app itself), so that's just
+-- hardcoded.
 create extension if not exists pg_net;
 
 create or replace function public.notify_push(
@@ -27,12 +34,23 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+    v_webhook_secret text;
 begin
+    select decrypted_secret into v_webhook_secret
+    from vault.decrypted_secrets
+    where name = 'push_webhook_secret';
+
+    if v_webhook_secret is null then
+        raise warning 'push_webhook_secret not set in Vault -- skipping push notification';
+        return;
+    end if;
+
     perform net.http_post(
-        url := current_setting('app.settings.supabase_url') || '/functions/v1/send-push-notification',
+        url := 'https://mxihqtkrnmkfodzrpfam.supabase.co/functions/v1/send-push-notification',
         headers := jsonb_build_object(
             'Content-Type', 'application/json',
-            'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key')
+            'x-webhook-secret', v_webhook_secret
         ),
         body := jsonb_build_object('userId', p_user_id, 'title', p_title, 'body', p_body)
     );
@@ -134,3 +152,20 @@ create trigger messages_notify_new_message
     after insert on public.messages
     for each row
     execute function public.notify_new_message();
+
+-- ============================================================
+-- One-time setup: the shared secret notify_push() reads above.
+-- Generate your own value (never reuse an example) and run, with the
+-- REAL value swapped in for <PASTE_YOUR_OWN_RANDOM_SECRET_HERE>:
+--
+--   select vault.create_secret('<PASTE_YOUR_OWN_RANDOM_SECRET_HERE>', 'push_webhook_secret');
+--
+-- Then set the exact same value as an Edge Function secret from a
+-- terminal (never paste it into a chat):
+--
+--   supabase secrets set PUSH_WEBHOOK_SECRET="<the same value>"
+--
+-- If you ever need to rotate it, use vault.update_secret with the id
+-- returned by create_secret, and re-run the supabase secrets set command
+-- with the new value.
+-- ============================================================
