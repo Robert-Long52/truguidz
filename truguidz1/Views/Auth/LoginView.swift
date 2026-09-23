@@ -143,10 +143,22 @@ struct LoginView: View {
             do {
                 switch mode {
                 case .signUp:
+                    // Without this, the confirmation email uses the
+                    // project-wide Site URL for its redirect -- which now
+                    // points at the guide web portal (see
+                    // supabase/config.toml's site_url), since that's the
+                    // only real destination that existed when that got
+                    // fixed. Fine for a signup that started on the portal,
+                    // wrong for one that started here: confirming would
+                    // land an app user in a browser on a guide dashboard
+                    // instead of back in the app. This makes the app's own
+                    // signups redirect to itself instead, the same way
+                    // ForgotPasswordView already does for password resets.
                     let response = try await supabase.auth.signUp(
                         email: email,
                         password: password,
-                        data: ["name": .string(name)]
+                        data: ["name": .string(name)],
+                        redirectTo: URL(string: "truguidz://email-confirmed")!
                     )
                     if response.session != nil {
                         // Email confirmation is off (or already satisfied) — signed in immediately.

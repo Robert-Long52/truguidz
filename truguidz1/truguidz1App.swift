@@ -11,6 +11,11 @@ import Supabase
 
 @main
 struct truguidz1App: App {
+    // Needed for one thing only: didRegisterForRemoteNotificationsWithDeviceToken
+    // is a UIApplicationDelegate callback, not something SwiftUI's App
+    // protocol exposes directly.
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     // Created once for the lifetime of the app, then handed down
     // to every view via .environmentObject below.
     // Starts with no user and lets UserSession's Supabase auth listener
@@ -67,6 +72,27 @@ struct truguidz1App: App {
                 .environmentObject(profileStore)
                 .environmentObject(reviewStore)
         }
+    }
+}
+
+// Push Notifications capability still needs to be added once in Xcode
+// (Signing & Capabilities -> + Capability -> Push Notifications, needs the
+// Apple Developer account signed in) -- that's what actually registers the
+// entitlement with Apple and generates the paired provisioning profile;
+// nothing in source alone can do that part.
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        PushNotificationService.uploadToken(deviceToken)
+    }
+
+    func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("Failed to register for remote notifications: \(error)")
     }
 }
 

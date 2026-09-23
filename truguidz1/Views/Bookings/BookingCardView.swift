@@ -46,7 +46,7 @@ struct BookingCardView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "person.2")
                         .foregroundColor(.appSecondaryText)
-                    Text("\(booking.numberOfGuests) guest\(booking.numberOfGuests == 1 ? "" : "s")")
+                    Text(booking.guestSummary)
                 }
                 .font(.subheadline)
                 .foregroundColor(.appSecondaryText)

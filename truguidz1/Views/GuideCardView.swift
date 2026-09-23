@@ -6,17 +6,28 @@ struct GuideCardView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            
+
             // Left Column: Text Information
             VStack(alignment: .leading, spacing: 6) {
-                
+
+                if !listing.isActive {
+                    Text("Inactive")
+                        .font(.caption2)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.gray.opacity(0.2))
+                        .foregroundColor(.appSecondaryText)
+                        .clipShape(Capsule())
+                }
+
                 // Trip Title
                 Text(listing.title)
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
                     .lineLimit(2) // Prevents long titles from breaking the card
-                
+
                 // Location & Category Tag
                 HStack(spacing: 4) {
                     Image(systemName: "mappin.and.ellipse")
@@ -80,6 +91,7 @@ struct GuideCardView: View {
         .background(Color.appCard)
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .opacity(listing.isActive ? 1 : 0.6)
     }
 
     private var placeholderImage: some View {

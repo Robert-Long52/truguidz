@@ -15,7 +15,7 @@ import { stripeRequest } from "../_shared/stripe.ts";
 // raw HTML source instead of the styled "you can close this tab" page.
 // A plain static page on the same site as the privacy policy/support
 // pages has no such restriction.
-const CONNECT_RETURN_URL = "https://robert-long52.github.io/truguidz-legal/connect-return.html";
+const CONNECT_RETURN_URL = "https://truguidz.com/connect-return.html";
 
 export default {
   fetch: withSupabase({ auth: "user" }, async (_req, ctx) => {
